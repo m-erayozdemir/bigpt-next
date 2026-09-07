@@ -1,0 +1,15 @@
+node_modules/
+dist/
+build/
+.expo/
+.DS_Store
+.env
+.env.*
+!.env.example
+*.log
+backend/docs/
+backend/uploads/
+backend/rag-*-store.json
+.cache/
+*.onnx
+*.safetensors
