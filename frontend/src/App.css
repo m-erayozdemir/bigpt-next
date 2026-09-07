@@ -1,0 +1,548 @@
+/* --------------------------------------------------------- */
+/* GLOBAL RESET */
+/* --------------------------------------------------------- */
+
+html, body, #root {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+}
+
+body {
+  background: #000;
+  font-family: 'Inter', sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+
+/* --------------------------------------------------------- */
+/* BACKGROUND — VisionOS Deep Glass Gradient */
+/* --------------------------------------------------------- */
+
+.app-wrapper {
+  height: 100vh;
+  width: 100%;
+  background: radial-gradient(
+    circle at 30% 15%,
+    rgba(40,40,40,0.5) 0%,
+    rgba(10,10,10,0.9) 45%,
+    #000 100%
+  );
+
+  background-blend-mode: overlay;
+  color: white;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow: hidden;
+
+  position: relative;
+}
+
+/* Noise layer (VisionOS hissi için) */
+.app-wrapper::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: url("https://www.transparenttextures.com/patterns/asfalt-light.png");
+  opacity: 0.12;
+  pointer-events: none;
+}
+
+
+
+/* --------------------------------------------------------- */
+/* HEADER */
+/* --------------------------------------------------------- */
+
+.app-title {
+  margin-top: 32px;
+  margin-bottom: 10px;
+
+  font-size: 28px;
+  font-weight: 500;
+  letter-spacing: 0.3px;
+  opacity: 0.92;
+  z-index: 2;
+}
+
+
+
+/* --------------------------------------------------------- */
+/* CHAT WRAPPER */
+/* --------------------------------------------------------- */
+
+.chat-wrapper {
+  width: 100%;
+  max-width: 900px;
+
+  height: calc(100vh - 120px);
+  margin-top: 20px;
+
+  display: flex;
+  flex-direction: column;
+
+  padding: 0 16px;
+  z-index: 2;
+}
+
+
+
+/* --------------------------------------------------------- */
+/* CHATBOX CONTAINER */
+/* --------------------------------------------------------- */
+
+.chatbox-container {
+  flex: 1;
+
+  display: flex;
+  flex-direction: column;
+
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.05);
+  border-radius: 22px;
+
+  backdrop-filter: blur(14px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.45);
+
+  overflow: hidden;
+}
+
+
+
+/* --------------------------------------------------------- */
+/* MESSAGE AREA */
+/* --------------------------------------------------------- */
+
+.messages-container {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  justify-content: center;
+  padding-top: 26px;
+}
+
+.messages-inner {
+  width: 100%;
+  max-width: 820px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding: 0 22px 30px 22px;
+}
+
+
+
+/* --------------------------------------------------------- */
+/* MESSAGE BUBBLES */
+/* --------------------------------------------------------- */
+
+/* Row alignment */
+.message-row {
+  display: flex;
+}
+
+.message-user { justify-content: flex-end; }
+.message-bot  { justify-content: flex-start; }
+
+
+/* Base bubble style */
+.message-bubble {
+  padding: 14px 20px;
+  border-radius: 22px;
+  max-width: 68%;
+  font-size: 15px;
+  line-height: 1.55;
+  backdrop-filter: blur(14px);
+  position: relative;
+}
+
+
+/* USER BUBBLE — Soft Cyan VisionOS */
+.bubble-user {
+  background: linear-gradient(
+    135deg,
+    rgba(140,225,255,0.22),
+    rgba(90,180,220,0.28)
+  );
+  border: 1px solid rgba(150,220,255,0.35);
+  color: #e8faff;
+
+  box-shadow:
+    0 4px 20px rgba(0,170,255,0.18),
+    inset 0 0 10px rgba(255,255,255,0.05);
+}
+
+
+/* BOT BUBBLE — translucent glass */
+.bubble-bot {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.12);
+
+  color: rgba(255,255,255,0.92);
+
+  box-shadow:
+    0 4px 16px rgba(0,0,0,0.4),
+    inset 0 0 10px rgba(255,255,255,0.03);
+}
+
+
+/* FILE BUBBLES */
+.message-file {
+  margin-top: 8px;
+  padding: 6px 12px;
+  border-radius: 12px;
+  background: rgba(255,255,255,0.12);
+  font-size: 13px;
+}
+
+
+
+/* --------------------------------------------------------- */
+/* TYPING INDICATOR — VisionOS style */
+/* --------------------------------------------------------- */
+
+.typing-container {
+  display: flex;
+}
+
+.typing-bubble {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.12);
+  padding: 12px 20px;
+  border-radius: 22px;
+  display: flex;
+  gap: 10px;
+  backdrop-filter: blur(14px);
+}
+
+.typing-dot {
+  width: 8px;
+  height: 8px;
+  background: #d0d0d0;
+  border-radius: 50%;
+  animation: typingBlink 1.2s infinite;
+}
+
+.typing-dot:nth-child(2) { animation-delay: 0.18s; }
+.typing-dot:nth-child(3) { animation-delay: 0.36s; }
+
+@keyframes typingBlink {
+  0%   { opacity: 0.25; transform: translateY(0); }
+  25%  { opacity: 1; transform: translateY(-4px); }
+  100% { opacity: 0.25; transform: translateY(0); }
+}
+
+
+
+/* --------------------------------------------------------- */
+/* INPUT BAR — Glow Capsule VisionOS */
+/* --------------------------------------------------------- */
+
+.input-wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding: 18px 0 22px 0;
+  border-top: 1px solid rgba(255,255,255,0.05);
+  
+  /* YENİ: Input alanını mesajların üstüne taşı */
+  position: relative;
+  z-index: 100; 
+  background: rgba(0, 0, 0, 0.4); /* Input arkasına hafif bir zemin */
+  backdrop-filter: blur(10px);
+}
+
+.input-inner {
+  width: 100%;
+  max-width: 820px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 0 18px;
+}
+
+
+
+/* SELECTED FILES */
+.selected-files {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.selected-file {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255,255,255,0.08);
+  padding: 7px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.15);
+  color: white;
+  font-size: 14px;
+  backdrop-filter: blur(10px);
+}
+
+.selected-file-remove {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #ccc;
+}
+
+
+
+/* INPUT ROW */
+.input-row {
+  display: flex;
+  gap: 10px;
+  width: 100%;
+}
+
+
+
+/* BUTTONS — small glass buttons */
+.btn-attach,
+.btn-model,
+.btn-send {
+  padding: 12px 14px;
+
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 14px;
+
+  backdrop-filter: blur(12px);
+
+  color: white !important;
+  cursor: pointer;
+
+  transition: 0.15s ease;
+}
+
+.btn-attach:hover,
+.btn-model:hover {
+  background: rgba(255,255,255,0.12);
+}
+
+
+
+/* SEND BUTTON — Accent cyan glow */
+.btn-send {
+  background: linear-gradient(
+    135deg,
+    rgba(120,210,255,0.6),
+    rgba(80,170,220,0.75)
+  );
+
+  border: 1px solid rgba(150,220,255,0.45);
+
+  box-shadow:
+    0 4px 20px rgba(120,210,255,0.45),
+    inset 0 0 10px rgba(255,255,255,0.18);
+}
+
+.btn-send:hover {
+  box-shadow:
+    0 6px 24px rgba(120,210,255,0.55),
+    inset 0 0 10px rgba(255,255,255,0.25);
+}
+
+
+
+/* --------------------------------------------------------- */
+/* MODEL DROPDOWN — VisionOS floating panel */
+/* --------------------------------------------------------- */
+
+.model-dropdown {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.model-menu {
+  position: absolute;
+  
+  /* Menüyü butonun yukarısına, input bar'dan biraz uzağa sabitle */
+  bottom: 130%; 
+  left: 0;
+
+  width: 180px;
+  padding: 8px;
+
+  /* YENİ: Şeffaf cam yerine KATI SİYAH/GRİ zemin */
+  background: #1e1e1e; 
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 14px;
+
+  /* Gölge ve Z-Index ayarı */
+  box-shadow: 0 10px 40px rgba(0,0,0,0.8);
+  z-index: 9999; /* En üstte durması için */
+  
+  /* Animasyonlu açılış (Opsiyonel ama şık durur) */
+  animation: fadeInMenu 0.2s ease-out;
+}
+
+/* Menü içi butonlar */
+.model-menu button {
+  width: 100%;
+  padding: 10px 12px;
+  border: none;
+  background: transparent;
+  color: #e0e0e0;
+  border-radius: 8px;
+  cursor: pointer;
+  text-align: left;
+  font-size: 14px;
+  transition: all 0.2s;
+}
+
+.model-menu button:hover {
+  background: rgba(255,255,255,0.1);
+  color: #fff;
+}
+
+/* Basit açılış animasyonu */
+@keyframes fadeInMenu {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+
+
+/* --------------------------------------------------------- */
+/* TEXT INPUT — Glow Capsule */
+/* --------------------------------------------------------- */
+
+.text-input {
+  flex: 1;
+  padding: 14px 18px;
+
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.18);
+  border-radius: 18px;
+
+  backdrop-filter: blur(14px);
+
+  color: white;
+  font-size: 15.5px;
+  outline: none;
+
+  box-shadow:
+    0 0 12px rgba(255,255,255,0.05),
+    inset 0 0 6px rgba(255,255,255,0.08);
+
+  transition: 0.15s ease;
+}
+
+.text-input:focus {
+  border: 1px solid rgba(140,225,255,0.35);
+  box-shadow:
+    0 0 16px rgba(140,225,255,0.25),
+    inset 0 0 8px rgba(255,255,255,0.12);
+}
+
+
+
+/* --------------------------------------------------------- */
+/* SCROLLBAR */
+/* --------------------------------------------------------- */
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(255,255,255,0.03);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.18);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255,255,255,0.25);
+}
+
+/* --------------------------------------------------------- */
+/* MARKDOWN STYLES */
+/* --------------------------------------------------------- */
+
+.markdown-content {
+  font-size: 15px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.95);
+}
+
+/* Paragraflar arası boşluk */
+.markdown-content p {
+  margin-bottom: 12px;
+  margin-top: 0;
+}
+.markdown-content p:last-child {
+  margin-bottom: 0;
+}
+
+/* Listeler */
+.markdown-content ul, 
+.markdown-content ol {
+  margin-left: 20px;
+  margin-bottom: 12px;
+  padding-left: 0;
+}
+
+.markdown-content li {
+  margin-bottom: 6px;
+}
+
+/* Kalın Yazı (Bold) */
+.markdown-content strong {
+  font-weight: 700;
+  color: #fff; /* Biraz daha parlak beyaz */
+}
+
+/* Kod Blokları (Inline) */
+.markdown-content code {
+  background: rgba(0, 0, 0, 0.3);
+  padding: 2px 6px;
+  border-radius: 6px;
+  font-family: 'Menlo', 'Consolas', monospace;
+  font-size: 0.9em;
+  color: #ffcc00; /* Kodlar sarımsı/altın */
+}
+
+/* Kod Blokları (Block - ```code```) */
+.markdown-content pre {
+  background: rgba(0, 0, 0, 0.4);
+  padding: 12px;
+  border-radius: 12px;
+  overflow-x: auto;
+  margin-bottom: 12px;
+  border: 1px solid rgba(255,255,255,0.1);
+}
+
+.markdown-content pre code {
+  background: none;
+  padding: 0;
+  color: #e0e0e0;
+  font-size: 0.85em;
+}
+
+/* Linkler */
+.markdown-content a {
+  color: #4facfe;
+  text-decoration: none;
+  border-bottom: 1px dashed #4facfe;
+}
+.markdown-content a:hover {
+  color: #7ad3ff;
+  border-bottom: 1px solid #7ad3ff;
+}
+.preview-notice { text-align: center; padding: 10px 16px; color: #b8ddeb; font-size: 13px; background: rgba(50,90,110,.16); border-bottom: 1px solid rgba(180,220,240,.12); }
