@@ -1,24 +1,59 @@
 # BiGPT-Next
 
-A document-assisted chat prototype developed by Mehmet Eray Ozdemir during an
-internship, combining a React web interface, Express backend and Expo/React Native
-mobile client with Ollama-based model access.
+A document-assisted AI chat application with web and mobile clients. Developed by
+Mehmet Eray Ozdemir during an internship, it combines document retrieval, streamed
+responses and automatic model selection behind an Express API.
 
-| Component | Responsibilities |
+**Technologies:** React, Express, Expo/React Native, Ollama, Transformers.js,
+PDF extraction and server-sent events (SSE).
+
+## Key capabilities
+
+- Web chat with Markdown rendering, streamed responses and model selection.
+- PDF text extraction and image descriptions through LLaVA.
+- Retrieval over document chunks using multilingual embeddings and cosine similarity.
+- Rule-based model routing using language, task keywords and available context.
+- Expo mobile client for chat and document uploads.
+
+## Architecture
+
+| Component | Role |
 | --- | --- |
-| `frontend/` | Model selection, Markdown chat, streamed responses, attachments |
-| `backend/` | Model routing, PDF extraction, image descriptions, retrieval, SSE |
-| `BiGPT-Mobile/` | Mobile chat and document upload client |
+| `frontend/` | React chat interface and streaming API client |
+| `backend/routes/` | Chat, streaming and document upload endpoints |
+| `backend/services/` | Model calls, automatic routing, embeddings and retrieval |
+| `BiGPT-Mobile/` | Expo/React Native client |
 
-The author previously ran model inference on RunPod. That environment is no
-longer configured. Full model-backed operation has not been tested in this
-preparation; this is a source-code portfolio, not a verified runnable AI demo.
-This repository preserves the application source, without
-model weights, original documents, uploaded files or stored RAG vectors.
+The model menu includes LLaMA 3.1, Qwen 2.5, DeepSeek R1 and Mistral. Images are
+processed with LLaVA; document embeddings use
+`Xenova/paraphrase-multilingual-MiniLM-L12-v2`. Retrieved context is added to the
+current prompt, and the response is streamed to the client.
 
-## Optional interface-only preview
+## Runtime requirements
 
-Use Node.js 22.12+ and pnpm. From `frontend/`:
+The project previously used RunPod-hosted inference. That environment is no
+longer active. This repository contains the application source; model weights,
+company documents, uploaded files and cached RAG records are excluded.
+
+For full operation:
+
+1. Configure an Ollama service with the required models.
+2. Copy `backend/.env.example` to `backend/.env` and set `OLLAMA_URL`.
+3. In `backend/`, run `npm install` and `npm start`.
+4. In `frontend/`, copy `.env.example` to `.env.local`, set `VITE_PREVIEW=false`
+   and configure `VITE_API_URL`. Run `pnpm install` and `pnpm dev`.
+
+Optional system PDFs belong in `backend/docs/` and are indexed at startup.
+Embedding weights may be downloaded on first use.
+
+For mobile, configure `EXPO_PUBLIC_API_URL` using `BiGPT-Mobile/.env.example`,
+install its dependencies and run `npm start`. A physical device needs an address
+that can reach the backend.
+
+### Interface-only preview
+
+The frontend can also open without model infrastructure. With Node.js 22.12+
+from `frontend/`:
 
 ```sh
 pnpm install
@@ -26,43 +61,23 @@ cp .env.example .env.local
 pnpm dev --host 127.0.0.1
 ```
 
-Open the URL printed by Vite. `VITE_PREVIEW=true` disables backend reset requests,
-messaging and uploads. The view is clearly labeled as a preview; it shows the
-original interface and model selector without simulating AI answers. No model
-or RunPod installation is needed. Build with `pnpm build`.
+The example sets `VITE_PREVIEW=true`. This clearly labeled mode disables backend
+requests, messaging and uploads, while retaining the interface and model menu.
+It does not simulate AI responses.
 
-## Full application requirements (not provisioned here)
+## Validation and limitations
 
-1. Configure an Ollama service and the models you intend to use.
-2. Copy `backend/.env.example` to `backend/.env` and set `OLLAMA_URL`.
-3. Install backend dependencies with `npm install`, then run `npm start`.
-4. Set `VITE_PREVIEW=false` and `VITE_API_URL` in the frontend environment and
-   restart Vite.
+The web production build and ESLint checks passed. The interface-only preview
+was opened successfully. Model-backed chat, retrieval and the mobile client have
+not been revalidated because the original inference environment is unavailable.
 
-The menu offers `llama3.1:latest`, `qwen2.5:latest`, `deepseek-r1:latest` and
-`mistral:latest`. Image uploads use `llava:latest`. Document embeddings use
-`Xenova/paraphrase-multilingual-MiniLM-L12-v2`, which may download weights on
-first use. None of these models were installed during portfolio preparation.
+This is a single-user prototype: document stores are shared, mounting a client
+resets the user store, and authentication and per-user isolation are not implemented.
+Backend CORS is unrestricted and upload sizes are not capped. A public deployment
+would require these controls and live integration testing. Model quality and
+standards compliance have not been benchmarked.
 
-The automatic router uses language and keyword rules, rather than a trained
-router. PDFs are parsed for text; image uploads are described with LLaVA.
-Retrieval uses text chunks and vectors in local JSON stores. Optional system
-PDFs belong in `backend/docs/` and are indexed at backend startup.
+## Author
 
-For mobile, configure `EXPO_PUBLIC_API_URL` using `BiGPT-Mobile/.env.example`.
-A physical device needs a reachable backend address; its localhost refers to
-the device itself. Backend inference and the mobile app have not been revalidated.
-
-## Limitations and preparation changes
-
-- Single-user prototype: no authentication or per-user document isolation.
-  Mounting a client resets the shared user RAG store.
-- Unrestricted backend CORS and no upload size limit; public deployment requires
-  additional work. Streaming and model quality need live integration testing.
-- No benchmark or standards-compliance claim is made.
-- Original prompts and algorithms are retained. Preparation adds configurable
-  client URLs and a backend-free interface preview.
-- Company PDFs, uploads and RAG records are omitted. The unused `rag(1).js`
-  duplicate is excluded; active routes use `rag.js`.
-
-No new project license is assigned. Existing dependency licenses still apply.
+Mehmet Eray Ozdemir. Published as an internship portfolio project.
+No new project-wide license is assigned; existing dependency licenses apply.
